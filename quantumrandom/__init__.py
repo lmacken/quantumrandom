@@ -30,7 +30,7 @@ url = 'http://150.203.48.55/%s.php'
 
 def _get_block(kind='RawChar'):
     html = BeautifulSoup(urllib2.urlopen(url % kind).read())
-    return html.find('table', {'class': 'rng'}).td.text
+    return html.find('table', {'class': 'rng'}).td.text.encode('ascii')
 
 def binary():
     """ Return a string of 1024 random bits """
