@@ -26,20 +26,32 @@ http://physics0054.anu.edu.au
 import urllib2
 from BeautifulSoup import BeautifulSoup
 
-url = 'http://150.203.48.55/%s.php'
+URL = 'http://150.203.48.55/%s.php'
 
 def _get_block(kind='RawChar'):
-    html = BeautifulSoup(urllib2.urlopen(url % kind).read())
+    html = BeautifulSoup(urllib2.urlopen(URL % kind).read())
     return html.find('table', {'class': 'rng'}).td.text.encode('ascii')
 
 def binary():
     """ Return a string of 1024 random bits """
-    return _get_block('RawBin')
+    block = _get_block('RawBin')
+    assert len(block) == 1024, len(block)
+    for b in block:
+        assert b in ('0', '1'), b
+    return block
 
 def char():
     """ Return 1024 random alphanumeric (and underscore) characters """
-    return _get_block('RawChar')
+    block = _get_block('RawChar')
+    assert len(block) == 1024, len(block)
+    for c in block:
+        assert c.lower() in 'abcdefghijklmnopqrstuvwxyz0123456789_', c
+    return block
 
 def hex():
     """ Return a string of 1024 bytes of randomness in hexadecimal form """
-    return _get_block('RawHex')
+    block = _get_block('RawHex')
+    assert len(block) == 2048, len(block)
+    for h in block:
+        assert h in '0123456789abcdef', h
+    return block
