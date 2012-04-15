@@ -3,8 +3,6 @@ A Python interface to the ANU Quantum Random Numbers Server
 
 http://physics0054.anu.edu.au
 
-:warning: This module performs absolutely no error checking. The user is currently responsible for handling any exceptions due to server outages, etc.
-
 Usage
 -----
 
@@ -16,3 +14,5 @@ Usage
    quantumrandom.binary()
    quantumrandom.hex()
    quantumrandom.char()
+
+:warning: This module performs absolutely no error checking, exception handling, or validation. Also, due to the lack of an SSL/TLS interface at the moment, all data is sent over the wire in clear text.
