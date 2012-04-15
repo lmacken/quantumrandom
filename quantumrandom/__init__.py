@@ -26,12 +26,11 @@ http://physics0054.anu.edu.au
 import urllib2
 from BeautifulSoup import BeautifulSoup
 
-url = 'http://150.203.48.55'
+url = 'http://150.203.48.55/%s.php'
 
 def _get_block(kind='RawChar'):
-    html = urllib2.urlopen(url + '/%s.php' % kind).read()
-    soup = BeautifulSoup(html)
-    return soup.find(**{'class': 'rng'}).td.text
+    html = BeautifulSoup(urllib2.urlopen(url % kind).read())
+    return html.find('table', {'class': 'rng'}).td.text
 
 def binary():
     """ Return a string of 1024 random bits """
