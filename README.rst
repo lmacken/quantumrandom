@@ -1,25 +1,21 @@
 A Python interface to the ANU Quantum Random Numbers Server
 ===========================================================
 
-This module is used to fetch blocks of random binary, hex, or character
-data from `The ANU Quantum Random Number Generator
-<http://physics0054.anu.edu.au>`_.
+This module provides a Python interface to `The ANU Quantum Random Number
+Generator <http://physics0054.anu.edu.au>`_.
 
+Usage
+-----
 
 ::
 
-   import quantumrandom
+    >>> import quantumrandom
+    >>> quantumrandom.get_data(data_type='uint16', array_length=1, block_size=1)
+    {u'data': [35817], u'length': u'1', u'type': u'uint16', u'success': True}
+    >>> quantumrandom.get_data(data_type='hex16', array_length=1, block_size=1)
+    {u'data': [u'b9'], u'length': u'1', u'type': u'string', u'success': True, u'size': u'1'}
 
-   # Get a string of 1024 random bits
-   quantumrandom.binary()
-
-   # Get a string of 1024 bytes of randomness in hexadecimal form
-   quantumrandom.hex()
-
-   # Get 1024 random alphanumeric (and underscore) characters
-   quantumrandom.char()
-
-If for some reason it cannot obtain the correct amount of data in the
-expected format, these functions will raise exceptions.
+Valid `data_types` values are `uint16` and `hex16`.
+The `array_length` cannot be larger than `100`.
 
 :warning: Due to the lack of an SSL/TLS interface at the moment, all data is sent over the wire in clear text.
