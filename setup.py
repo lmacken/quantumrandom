@@ -1,15 +1,17 @@
 from setuptools import setup, find_packages
-import sys, os
 
-version = '0.2'
+version = '1.0'
+
+f = open('README.rst')
+long_description = f.read()
+f.close()
 
 setup(name='quantumrandom',
       version=version,
       description="A Python interface to the ANU Quantum Random Numbers Server",
-      long_description="""\
-""",
+      long_description=long_description,
       classifiers=[
-          'Development Status :: 3 - Alpha',
+          'Development Status :: 5 - Production/Stable',
           'License :: OSI Approved :: MIT License',
           'Topic :: Scientific/Engineering :: Mathematics',
           ],
@@ -21,9 +23,6 @@ setup(name='quantumrandom',
       packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
       include_package_data=True,
       zip_safe=True,
-      install_requires=[
-          'BeautifulSoup',
-      ],
-      entry_points="""
-      """,
+      install_requires=[],
+      entry_points="",
       )
