@@ -18,6 +18,20 @@ class TestQuantumRandom(unittest.TestCase):
         assert len(data['data']) == 1
         assert int(data['size']) == 1
 
+    def test_uint16_json_api_long_array(self):
+        try:
+            data = quantumrandom.get_data('uint16', 101, 1)
+            assert False, "Invalid array length didn't cause error: %s" % data
+        except:
+            pass
+
+    def test_uint16_json_api_invalid_type(self):
+        try:
+            data = quantumrandom.get_data('binary', 1, 1)
+            assert False, "Invalid type didn't throw exception: %s" % data
+        except:
+            pass
+
 
 if __name__ == '__main__':
     unittest.main()
