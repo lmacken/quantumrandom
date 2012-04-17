@@ -2,7 +2,7 @@ A Python interface to the ANU Quantum Random Numbers Server
 ===========================================================
 
 This module provides a Python interface to `The ANU Quantum Random Number
-Generator <http://physics0054.anu.edu.au>`_.
+Generator <http://physics0054.anu.edu.au>`_ JSON API.
 
 Usage
 -----
@@ -12,8 +12,6 @@ Usage
     >>> import quantumrandom
     >>> quantumrandom.get_data(data_type='uint16', array_length=1, block_size=1)
     {u'data': [35817], u'length': u'1', u'type': u'uint16', u'success': True}
-    >>> quantumrandom.get_data(data_type='hex16', array_length=1, block_size=1)
-    {u'data': [u'b9'], u'length': u'1', u'type': u'string', u'success': True, u'size': u'1'}
 
 Valid ``data_types`` values are ``uint16`` and ``hex16``.
 The ``array_length`` cannot be larger than ``100``.
