@@ -23,18 +23,17 @@ A Python interface to the ANU Quantum Random Numbers Server.
 http://physics0054.anu.edu.au
 """
 
-import json
 import urllib
 import urllib2
-import warnings
-
-from BeautifulSoup import BeautifulSoup
+try:
+    import json
+except ImportError:
+    import simplejson as json
 
 IP = '150.203.48.55'
 JSON_API = 'http://%s/API/jsonI.php' % IP
 DATA_TYPES = ['uint16', 'hex16']
 MAX_LEN = 100
-
 
 def get_data(data_type='uint16', array_length=1, block_size=1):
     """Fetch data from the ANU Quantum Random Numbers JSON API"""
@@ -48,42 +47,3 @@ def get_data(data_type='uint16', array_length=1, block_size=1):
         'size': block_size,
         })
     return json.loads(urllib2.urlopen(req).read())
-
-
-##
-## Deprecated scraper functions.
-##
-
-def _get_block(kind='RawChar'):
-    warnings.warn('The quantumrandom.{binary,hex,char} functions are '
-                  'deprecated. Please use quantumrandom.get_data instead.')
-    url = 'http://%s/%s.php' % (IP, kind)
-    html = BeautifulSoup(urllib2.urlopen(url).read())
-    return html.find('table', {'class': 'rng'}).td.text.encode('ascii')
-
-
-def binary():
-    """ Return a string of 1024 random bits """
-    block = _get_block('RawBin')
-    assert len(block) == 1024, len(block)
-    for b in block:
-        assert b in ('0', '1'), b
-    return block
-
-
-def char():
-    """ Return 1024 random alphanumeric (and underscore) characters """
-    block = _get_block('RawChar')
-    assert len(block) == 1024, len(block)
-    for c in block:
-        assert c.lower() in 'abcdefghijklmnopqrstuvwxyz0123456789_', c
-    return block
-
-
-def hex():
-    """ Return a string of 1024 bytes of randomness in hexadecimal form """
-    block = _get_block('RawHex')
-    assert len(block) == 2048, len(block)
-    for h in block:
-        assert h in '0123456789abcdef', h
-    return block
