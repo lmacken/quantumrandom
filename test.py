@@ -26,6 +26,13 @@ class TestQuantumRandom(unittest.TestCase):
         except:
             pass
 
+    def test_uint16_json_api_large_blocksize(self):
+        try:
+            data = quantumrandom.get_data('uint16', 1, 101)
+            assert False, "Invalid block size didn't cause error: %s" % data
+        except:
+            pass
+
     def test_uint16_json_api_invalid_type(self):
         try:
             data = quantumrandom.get_data('binary', 1, 1)
