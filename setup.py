@@ -1,10 +1,15 @@
 from setuptools import setup, find_packages
+import sys
 
-version = '1.0'
+version = '1.1'
 
 f = open('README.rst')
 long_description = f.read()
 f.close()
+
+requires = []
+if sys.version_info[:2] == (2, 4):
+    requires.append('simplejson < 2.0.10')
 
 setup(name='quantumrandom',
       version=version,
@@ -23,6 +28,6 @@ setup(name='quantumrandom',
       packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
       include_package_data=True,
       zip_safe=True,
-      install_requires=[],
+      install_requires=requires,
       entry_points="",
       )
