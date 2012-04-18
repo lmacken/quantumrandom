@@ -46,4 +46,7 @@ def get_data(data_type='uint16', array_length=1, block_size=1):
         'length': array_length,
         'size': block_size,
         })
-    return json.loads(urllib2.urlopen(req).read())
+    data = json.loads(urllib2.urlopen(req).read())
+    assert data['success'] is True, data
+    assert data['length'] == array_length, data
+    return data['data']
