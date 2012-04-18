@@ -42,6 +42,8 @@ def get_data(data_type='uint16', array_length=1, block_size=1):
         raise Exception("data_type must be one of %s" % DATA_TYPES)
     if array_length > MAX_LEN:
         raise Exception("array_length cannot be larger than %s" % MAX_LEN)
+    if block_size > MAX_LEN:
+        raise Exception("block_size cannot be larger than %s" % MAX_LEN)
     req = JSON_API + '?' + urllib.urlencode({
         'type': data_type,
         'length': array_length,
