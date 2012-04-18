@@ -57,7 +57,7 @@ def get_data(data_type='uint16', array_length=1, block_size=1):
 
 def _object_hook(obj):
     """We are only dealing with ASCII characters"""
-    if obj['type'] == 'string':
+    if obj.get('type') == 'string':
         obj['data'] = [s.encode('ascii') for s in obj['data']]
     return obj
 
