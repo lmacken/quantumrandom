@@ -33,6 +33,9 @@ class TestQuantumRandom(unittest.TestCase):
         except:
             pass
 
+    def test_ensure_bytestrings(self):
+        data = quantumrandom.get_data('hex16', 1, 1)
+        assert type(data[0]) is str, data
 
 if __name__ == '__main__':
     unittest.main()
