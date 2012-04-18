@@ -18,8 +18,8 @@ Usage
     ['f1d5', '0eb3', '1119', '7cfd', '64ce']
 
 Valid ``data_type`` values are ``uint16`` and ``hex16``, and the
-``array_length`` cannot be larger than ``100``. If for some reason the API
-call is not successful, or the incorrect amount of data is returned, this
-function will raise an exception.
+``array_length`` and ``block_size`` cannot be larger than ``100``. If for
+some reason the API call is not successful, or the incorrect amount of
+data is returned from the server, this function will raise an exception.
 
 :warning: Due to the lack of an SSL/TLS interface at the moment, all data is sent over the wire in clear text.
