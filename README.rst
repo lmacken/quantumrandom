@@ -10,8 +10,12 @@ Usage
 ::
 
     >>> import quantumrandom
-    >>> quantumrandom.get_data(data_type='uint16', array_length=1, block_size=1)
-    {u'data': [35817], u'length': 1, u'type': u'uint16', u'success': True}
+    >>> quantumrandom.get_data()
+    [26646]
+    >>> quantumrandom.get_data(data_type='hex16', array_length=5, block_size=2)
+    [u'46db', u'9a11', u'ab24', u'510a', u'a69a']
+    >>> quantumrandom.get_data(data_type='uint16', array_length=5, block_size=5)
+    [42796, 32457, 9242, 11316, 21078]
 
 Valid ``data_type`` values are ``uint16`` and ``hex16``.
 The ``array_length`` cannot be larger than ``100``.
