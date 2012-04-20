@@ -23,6 +23,7 @@ A Python interface to the ANU Quantum Random Numbers Server.
 http://physics0054.anu.edu.au
 """
 
+import math
 import urllib
 import urllib2
 import binascii
@@ -70,6 +71,15 @@ def binary(array_length=100, block_size=100):
 def hex(array_length=100, block_size=100):
     """Return a chunk of hex"""
     return ''.join(get_data('hex16', array_length, block_size))
+
+def randint(min=0, max=10):
+    """Return an int between min and max"""
+    val = get_data(data_type='uint16', array_length=1, block_size=1)[0]
+    # Normalize
+    val = val / 65536.0
+    # Transform
+    val = int(math.floor(val * (max-min) + min))
+    return str(val)
 
 
 def uint16(array_length=100):
