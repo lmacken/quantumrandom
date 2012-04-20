@@ -1,7 +1,7 @@
 Tools for utilizing the ANU Quantum Random Numbers Server
 =========================================================
 
-This module provides tools for interacting with the `The ANU Quantum Random
+This module provides tools for interacting with `The ANU Quantum Random
 Number Generator <http://physics0054.anu.edu.au>`_. It communicates with their
 JSON API and provides a ``qrandom`` command-line tool, a Python API, and a
 /dev/qrandom character device.
