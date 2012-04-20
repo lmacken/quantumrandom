@@ -78,8 +78,7 @@ def randint(min=0, max=10):
     # Normalize
     val = val / 65536.0
     # Transform
-    val = int(math.floor(val * (max-min) + min))
-    return str(val)
+    return int(math.floor(val * (max-min) + min))
 
 
 def uint16(array_length=100):
