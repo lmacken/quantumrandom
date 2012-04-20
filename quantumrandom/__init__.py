@@ -37,6 +37,7 @@ JSON_API = 'http://%s/API/jsonI.php' % IP
 DATA_TYPES = ['uint16', 'hex16']
 MAX_LEN = 100
 
+
 def get_data(data_type='uint16', array_length=1, block_size=1):
     """Fetch data from the ANU Quantum Random Numbers JSON API"""
     if data_type not in DATA_TYPES:
@@ -72,9 +73,10 @@ def hex(array_length=100, block_size=100):
     """Return a chunk of hex"""
     return ''.join(get_data('hex16', array_length, block_size))
 
+
 def randint(min=0, max=10):
     """Return an int between min and max"""
-    return int(math.floor(get_data()[0] / 65536.0 * (max-min) + min))
+    return int(math.floor(get_data()[0] / 65536.0 * (max - min) + min))
 
 
 def uint16(array_length=100):
