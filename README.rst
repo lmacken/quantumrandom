@@ -38,6 +38,9 @@ Command-line tool
     1752+0 records out
     897024 bytes (897 kB) copied, 77.7588 s, 11.5 kB/s
 
+    $ qrandom --int --min 5 --max 15
+    7
+
 
 Python API
 --------
@@ -58,6 +61,8 @@ the largest amount of data possible with a single API call.
     numpy.array([48141], dtype=numpy.uint16)
     >>> quantumrandom.uint16(1).data[:]
     '\xcd\x93'
+    >>> quantumrandom.randint(0, 20)
+    5
 
 There is also a lower-level ``get_data`` function that gives you more control
 over what and how much data you want.

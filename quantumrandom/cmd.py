@@ -25,13 +25,28 @@ import sys
 import quantumrandom
 
 def main():
+    usage = "Usage: %s [--binary|--hex|--int --min MIN --max MAX]" % \
+            sys.argv[0]
     generator = None
+    # TODO -- use argparse here
     if '--binary' in sys.argv or '-b' in sys.argv:
         generator = quantumrandom.binary
     if '--hex' in sys.argv or '-h' in sys.argv:
         generator = quantumrandom.hex
+    if '--int' in sys.argv or '-i' in sys.argv:
+        # Special case.  Just print one.
+        try:
+            min = int(sys.argv[sys.argv.index('--min')+1])
+            max = int(sys.argv[sys.argv.index('--max')+1])
+        except ValueError:
+            print usage
+            sys.exit(1)
+
+        print quantumrandom.randint(min=min, max=max)
+        sys.exit(0)
+
     if not generator:
-        print "Usage: %s [--binary|--hex]" % sys.argv[0]
+        print usage
         sys.exit(1)
     try:
         while True:

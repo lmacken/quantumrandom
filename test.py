@@ -1,6 +1,7 @@
 import unittest
 import quantumrandom
 
+
 class TestQuantumRandom(unittest.TestCase):
 
     def test_uint16_json_api(self):
@@ -60,6 +61,12 @@ class TestQuantumRandom(unittest.TestCase):
         ints = quantumrandom.uint16()
         assert len(ints) == 100
         assert len(ints.data) == 200
+
+    def test_randint(self):
+        val = quantumrandom.randint(0, 10)
+        assert(val >= 0 and val < 10)
+        val = quantumrandom.randint(0, 1)
+        assert(val == 0)
 
 
 if __name__ == '__main__':
