@@ -74,11 +74,7 @@ def hex(array_length=100, block_size=100):
 
 def randint(min=0, max=10):
     """Return an int between min and max"""
-    val = get_data(data_type='uint16', array_length=1, block_size=1)[0]
-    # Normalize
-    val = val / 65536.0
-    # Transform
-    return int(math.floor(val * (max-min) + min))
+    return int(math.floor(get_data()[0] / 65536.0 * (max-min) + min))
 
 
 def uint16(array_length=100):
