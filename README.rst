@@ -1,10 +1,10 @@
-A Python interface to the ANU Quantum Random Numbers Server
-===========================================================
+Tools for utilizing the ANU Quantum Random Numbers Server
+=========================================================
 
-This module provides tools for interacting with the `The ANU Quantum
-Random Number Generator <http://physics0054.anu.edu.au>`_. It communicates
-with their JSON API and provides a ``qrandom`` command-line tool, a Python
-API, and a /dev/qrandom character device.
+This module provides tools for interacting with the `The ANU Quantum Random
+Number Generator <http://physics0054.anu.edu.au>`_. It communicates with their
+JSON API and provides a ``qrandom`` command-line tool, a Python API, and a
+/dev/qrandom character device.
 
 :warning: Due to the lack of an SSL/TLS interface at the moment, all data is sent over the wire in clear text.
 
