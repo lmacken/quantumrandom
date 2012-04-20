@@ -29,5 +29,8 @@ setup(name='quantumrandom',
       include_package_data=True,
       zip_safe=True,
       install_requires=requires,
-      entry_points="",
+      entry_points="""
+        [console_scripts]
+        qrandom = quantumrandom.cmd:main
+      """,
       )
