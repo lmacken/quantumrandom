@@ -22,7 +22,7 @@ Command-line tool
 
     $ qrandom --binary
     ���I�%��e(�1��c��Ee�4�������j�Կ��=�^H�c�u
-    oq��G��Z�^���fK�0_��h��s�b��AE=�rR~���(�^Q�)4��{c�������X{f��a�Bk�N%#W
+    oq��G��Z�^���fK�0_��h��s�b��AE=�rR~���(�^Q�)4��{c�������X{f��a�Bk�N%#W
     +a�a̙�IB�,S�!ꀔd�2H~�X�Z����R��.f
     ...
 
@@ -79,9 +79,9 @@ returned from the server, this function will raise an exception.
 Creating /dev/qrandom
 ---------------------
 
-quantumrandom provides a multi-threaded userspace character-device that
-can be used to provide random data similar to /dev/random. You can also
-use it to provide entropy to your system rng.
+quantumrandom provides a multi-threaded userspace character-device that can be
+used to provide random data similar to /dev/random. You can also use it to
+provide entropy to your system rng.
 
 ::
 
