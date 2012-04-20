@@ -61,6 +61,12 @@ class TestQuantumRandom(unittest.TestCase):
         assert len(ints) == 100
         assert len(ints.data) == 200
 
+    def test_randint(self):
+        val = quantumrandom.randint(0, 10)
+        assert(val >= 0 and val < 10)
+        val = quantumrandom.randint(0, 1)
+        assert(val == 0)
+
 
 if __name__ == '__main__':
     unittest.main()
