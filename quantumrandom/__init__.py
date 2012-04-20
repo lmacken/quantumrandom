@@ -25,6 +25,7 @@ http://physics0054.anu.edu.au
 
 import urllib
 import urllib2
+import binascii
 try:
     import json
 except ImportError:
@@ -35,7 +36,6 @@ JSON_API = 'http://%s/API/jsonI.php' % IP
 DATA_TYPES = ['uint16', 'hex16']
 MAX_LEN = 100
 
-
 def get_data(data_type='uint16', array_length=1, block_size=1):
     """Fetch data from the ANU Quantum Random Numbers JSON API"""
     if data_type not in DATA_TYPES:
@@ -44,12 +44,12 @@ def get_data(data_type='uint16', array_length=1, block_size=1):
         raise Exception("array_length cannot be larger than %s" % MAX_LEN)
     if block_size > MAX_LEN:
         raise Exception("block_size cannot be larger than %s" % MAX_LEN)
-    req = JSON_API + '?' + urllib.urlencode({
+    url = JSON_API + '?' + urllib.urlencode({
         'type': data_type,
         'length': array_length,
         'size': block_size,
         })
-    data = json.loads(urllib2.urlopen(req).read(), object_hook=_object_hook)
+    data = json.loads(urllib2.urlopen(url).read(), object_hook=_object_hook)
     assert data['success'] is True, data
     assert data['length'] == array_length, data
     return data['data']
@@ -62,4 +62,20 @@ def _object_hook(obj):
     return obj
 
 
-__all__ = ['get_data']
+def binary(array_length=100, block_size=100):
+    """Return a chunk of binary data"""
+    return binascii.unhexlify(hex(array_length, block_size))
+
+
+def hex(array_length=100, block_size=100):
+    """Return a chunk of hex"""
+    return ''.join(get_data('hex16', array_length, block_size))
+
+
+def uint16(array_length=100):
+    """Return a numpy array with 100 uint16 numbers"""
+    import numpy
+    return numpy.array(get_data('uint16', array_length), dtype=numpy.uint16)
+
+
+__all__ = ['get_data', 'binary', 'hex', 'uint16']
