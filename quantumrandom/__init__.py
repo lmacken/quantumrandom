@@ -35,15 +35,31 @@ JSON_API = 'http://%s/API/jsonI.php' % IP
 DATA_TYPES = ['uint16', 'hex16']
 MAX_LEN = 100
 
+
 def get_data(data_type='uint16', array_length=1, block_size=1):
     """Fetch data from the ANU Quantum Random Numbers JSON API"""
     if data_type not in DATA_TYPES:
         raise Exception("data_type must be one of %s" % DATA_TYPES)
     if array_length > MAX_LEN:
         raise Exception("array_length cannot be larger than %s" % MAX_LEN)
+    if block_size > MAX_LEN:
+        raise Exception("block_size cannot be larger than %s" % MAX_LEN)
     req = JSON_API + '?' + urllib.urlencode({
         'type': data_type,
         'length': array_length,
         'size': block_size,
         })
-    return json.loads(urllib2.urlopen(req).read())
+    data = json.loads(urllib2.urlopen(req).read(), object_hook=_object_hook)
+    assert data['success'] is True, data
+    assert data['length'] == array_length, data
+    return data['data']
+
+
+def _object_hook(obj):
+    """We are only dealing with ASCII characters"""
+    if obj.get('type') == 'string':
+        obj['data'] = [s.encode('ascii') for s in obj['data']]
+    return obj
+
+
+__all__ = ['get_data']

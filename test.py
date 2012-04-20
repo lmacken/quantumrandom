@@ -5,23 +5,31 @@ class TestQuantumRandom(unittest.TestCase):
 
     def test_uint16_json_api(self):
         data = quantumrandom.get_data('uint16', 1, 1)
-        assert data['success']
-        assert int(data['length']) == 1
-        assert data['type'] == 'uint16'
-        assert len(data['data']) == 1
+        assert len(data) == 1
+        for i in str(data[0]):
+            assert i in '0123456789', i
+
+    def test_uint16_json_api_max_array(self):
+        data = quantumrandom.get_data('uint16', 100, 100)
+        assert len(data) == 100
 
     def test_hex16_json_api(self):
         data = quantumrandom.get_data('hex16', 1, 1)
-        assert data['success']
-        assert int(data['length']) == 1
-        assert data['type'] == 'string'
-        assert len(data['data']) == 1
-        assert int(data['size']) == 1
+        assert len(data) == 1
+        for h in data[0]:
+            assert h in '0123456789abcdef', h
 
     def test_uint16_json_api_long_array(self):
         try:
             data = quantumrandom.get_data('uint16', 101, 1)
             assert False, "Invalid array length didn't cause error: %s" % data
+        except:
+            pass
+
+    def test_uint16_json_api_large_blocksize(self):
+        try:
+            data = quantumrandom.get_data('uint16', 1, 101)
+            assert False, "Invalid block size didn't cause error: %s" % data
         except:
             pass
 
@@ -32,6 +40,9 @@ class TestQuantumRandom(unittest.TestCase):
         except:
             pass
 
+    def test_ensure_bytestrings(self):
+        data = quantumrandom.get_data('hex16', 1, 1)
+        assert type(data[0]) is str, data
 
 if __name__ == '__main__':
     unittest.main()
