@@ -1,6 +1,7 @@
 import unittest
 import quantumrandom
 
+
 class TestQuantumRandom(unittest.TestCase):
 
     def test_uint16_json_api(self):
