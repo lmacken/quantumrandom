@@ -6,6 +6,8 @@ Random Number Generator <http://physics0054.anu.edu.au>`_. It communicates
 with their JSON API and provides a ``qrandom`` command-line tool, a Python
 API, and a /dev/qrandom character device.
 
+:warning: Due to the lack of an SSL/TLS interface at the moment, all data is sent over the wire in clear text.
+
 Installing
 ----------
 
@@ -73,8 +75,6 @@ Valid ``data_type`` values are ``uint16`` and ``hex16``, and the
 ``array_length`` and ``block_size`` cannot be larger than ``100``. If for some
 reason the API call is not successful, or the incorrect amount of data is
 returned from the server, this function will raise an exception.
-
-:warning: Due to the lack of an SSL/TLS interface at the moment, all data is sent over the wire in clear text.
 
 Creating /dev/qrandom
 ---------------------
