@@ -105,7 +105,7 @@ Monitoring your available entropy levels
     watch -n 1 cat /proc/sys/kernel/random/entropy_avail
 
 Check the randomness against `FIPS 140-2 <https://en.wikipedia.org/wiki/FIPS_140-2>`_ tests
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---------------------------------------------
 
 ::
 
