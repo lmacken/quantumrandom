@@ -32,5 +32,6 @@ setup(name='quantumrandom',
       entry_points="""
         [console_scripts]
         qrandom = quantumrandom.cmd:main
+        qrandom-dev = quantumrandom.dev:main
       """,
       )

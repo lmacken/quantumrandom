@@ -93,10 +93,10 @@ class QuantumRandomDevice(object):
 def log(msg):
     print(msg)
 
-if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        raise SystemExit('Usage: %s [-v] <devname>' % sys.argv[0])
 
+def main():
+    if '-h' in sys.argv:
+        raise SystemExit('Usage: %s [-v]')
     if '-v' not in sys.argv:
         global log
         def noop(msg):
@@ -105,11 +105,14 @@ if __name__ == '__main__':
     else:
         sys.argv.remove('-v')
 
-    devname = sys.argv[1]
     operations = QuantumRandomDevice()
-    cuse.init(operations, devname, sys.argv[2:])
+    cuse.init(operations, 'qrandom', sys.argv[2:])
 
     try:
         cuse.main(True)
     except Exception, err:
         log("CUSE main ended %s" % str(err))
+
+
+if __name__ == '__main__':
+    main()
