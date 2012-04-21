@@ -62,7 +62,7 @@ Adding entropy to the Linux random number generator
 
 ::
 
-    sudo rngd --rng-device=/dev/qrandom --random-device=/dev/urandom --foreground
+    sudo rngd --rng-device=/dev/qrandom --random-device=/dev/random --timeout=5 --foreground
 
 Monitoring your available entropy levels
 ----------------------------------------
