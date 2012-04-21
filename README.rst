@@ -63,7 +63,7 @@ cuse module.
 By default it will use 3 threads, which can be changed by passing '-t #' into the qrandom-dev.
 
 Testing the randomness for `FIPS 140-2 <https://en.wikipedia.org/wiki/FIPS_140-2>`_ compliance
----------------------------------------------
+----------------------------------------------------------------------------------------------
 
 ::
 
