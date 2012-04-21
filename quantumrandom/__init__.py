@@ -80,7 +80,7 @@ def randint(min=0, max=10):
 
 
 def uint16(array_length=100):
-    """Return a numpy array with 100 uint16 numbers"""
+    """Return a numpy array of uint16 numbers"""
     import numpy
     return numpy.array(get_data('uint16', array_length), dtype=numpy.uint16)
 
