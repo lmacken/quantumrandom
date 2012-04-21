@@ -28,7 +28,7 @@ import quantumrandom
 
 from cuse import cuse_api as libcuse
 
-NUM_THREADS = 3
+MAX_BUFFER = 100
 threads = []
 buffer = []
 
@@ -42,6 +42,11 @@ class RandomDataFetcher(threading.Thread):
         self.running = True
         try:
             while self.running:
+                if len(buffer) > MAX_BUFFER:
+                    log("[Thread %d] Buffer at capacity; thread sleeping" %
+                        self.id)
+                    time.sleep(self.id + 1)
+                    continue
                 buffer.append(quantumrandom.binary())
                 log("New random data buffered")
         except Exception, e:
