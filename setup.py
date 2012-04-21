@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import sys
 
-version = '1.3'
+version = '1.4'
 
 f = open('README.rst')
 long_description = f.read()
@@ -29,5 +29,9 @@ setup(name='quantumrandom',
       include_package_data=True,
       zip_safe=True,
       install_requires=requires,
-      entry_points="",
+      entry_points="""
+        [console_scripts]
+        qrandom = quantumrandom.cmd:main
+        qrandom-dev = quantumrandom.dev:main
+      """,
       )

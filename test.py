@@ -1,6 +1,7 @@
 import unittest
 import quantumrandom
 
+
 class TestQuantumRandom(unittest.TestCase):
 
     def test_uint16_json_api(self):
@@ -43,6 +44,30 @@ class TestQuantumRandom(unittest.TestCase):
     def test_ensure_bytestrings(self):
         data = quantumrandom.get_data('hex16', 1, 1)
         assert type(data[0]) is str, data
+
+    def test_binary(self):
+        binary = quantumrandom.binary()
+        assert binary
+        assert len(binary) == 10000, len(binary)
+
+    def test_hex(self):
+        hex = quantumrandom.hex()
+        assert hex
+        assert len(hex) == 20000, len(hex)
+        for h in hex:
+            assert h in '1234567890abcdef', h
+
+    def test_uint16(self):
+        ints = quantumrandom.uint16()
+        assert len(ints) == 100
+        assert len(ints.data) == 200
+
+    def test_randint(self):
+        val = quantumrandom.randint(0, 10)
+        assert(val >= 0 and val < 10)
+        val = quantumrandom.randint(0, 1)
+        assert(val == 0)
+
 
 if __name__ == '__main__':
     unittest.main()
