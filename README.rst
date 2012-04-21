@@ -47,11 +47,14 @@ Creating /dev/qrandom
 
 quantumrandom provides a multi-threaded userspace character device.
 
+On Fedora 17+ you'll need the kernel-modules-extra package installed.
+
 ::
 
     pip install ctypeslib hg+https://cusepy.googlecode.com/hg
     sudo modprobe cuse
-    sudo env/bin/python quantumrandom/dev.py qrandom
+    sudo chmod 666 /dev/cuse
+    qrandom-dev
     sudo chmod 666 /dev/qrandom
 
 Adding entropy to the Linux random number generator
