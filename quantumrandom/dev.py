@@ -37,7 +37,12 @@ class RandomDataFetcher(threading.Thread):
     """A thread that fills a buffer with binary data"""
     running = False
 
+    def __init__(self, id):
+        super(RandomDataFetcher, self).__init__()
+        self.id = id
+
     def run(self):
+        log("[Thread %d] Starting" % self.id)
         global buffer
         self.running = True
         try:
@@ -48,30 +53,32 @@ class RandomDataFetcher(threading.Thread):
                     time.sleep(self.id + 1)
                     continue
                 buffer.append(quantumrandom.binary())
-                log("New random data buffered")
+                log("[Thread %d] New random data buffered" % self.id)
         except Exception, e:
             import traceback
             traceback.print_exc()
         self.running = False
-        log("Thread done!")
+        log("[Thread %d] Done!" % self.id)
 
 
 class QuantumRandomDevice(object):
 
+    def __init__(self, num_threads=3):
+        self.num_threads = num_threads
+
     def read(self, req, size, off, file_info):
-        log("read(%s, %s, %s, %s)" % (req, size, off, file_info))
+        log("read(%s)" % size)
         global buffer, threads
         if not threads:
-            log("Creating %d threads" % NUM_THREADS)
-            for t in range(NUM_THREADS):
-                thread = RandomDataFetcher()
+            log("Creating %d threads" % self.num_threads)
+            for i, t in enumerate(range(self.num_threads)):
+                thread = RandomDataFetcher(i)
                 thread.setDaemon(True)
                 thread.start()
                 threads.append(thread)
         data = ''
         while len(data) < size:
             try:
-                log("buffer size: %d" % len(buffer))
                 data += buffer.pop(0)
                 break
             except IndexError:
@@ -92,7 +99,7 @@ class QuantumRandomDevice(object):
         for thread in dead:
             threads.remove(thread)
         libcuse.fuse_reply_err(req, 0)
-
+        log("/dev/qrandom released")
 
 
 def log(msg):
@@ -100,18 +107,18 @@ def log(msg):
 
 
 def main():
+    num_threads = 3
     if '-h' in sys.argv:
-        raise SystemExit('Usage: %s [-v]')
+        raise SystemExit('Usage: %s [-v] [-t THREADS]')
+    if '-t' in sys.argv:
+        num_threads = int(sys.argv[sys.argv.index('-t') + 1])
     if '-v' not in sys.argv:
         global log
-        def noop(msg):
-            pass
+        def noop(msg): pass
         log = noop
-    else:
-        sys.argv.remove('-v')
 
-    operations = QuantumRandomDevice()
-    cuse.init(operations, 'qrandom', sys.argv[2:])
+    operations = QuantumRandomDevice(num_threads)
+    cuse.init(operations, 'qrandom', [])
 
     try:
         cuse.main(True)
