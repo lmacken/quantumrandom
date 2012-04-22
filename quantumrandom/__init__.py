@@ -35,7 +35,7 @@ except ImportError:
 IP = '150.203.48.55'
 JSON_API = 'http://%s/API/jsonI.php' % IP
 DATA_TYPES = ['uint16', 'hex16']
-MAX_LEN = 100
+MAX_LEN = 1024
 
 
 def get_data(data_type='uint16', array_length=1, block_size=1):

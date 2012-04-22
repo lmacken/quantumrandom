@@ -112,7 +112,7 @@ Generator's JSON API. It returns variable-length lists of either
     ['f1d5', '0eb3', '1119', '7cfd', '64ce']
 
 Valid ``data_type`` values are ``uint16`` and ``hex16``, and the
-``array_length`` and ``block_size`` cannot be larger than ``100``. If for some
+``array_length`` and ``block_size`` cannot be larger than ``1024``. If for some
 reason the API call is not successful, or the incorrect amount of data is
 returned from the server, this function will raise an exception.
 
