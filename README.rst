@@ -48,7 +48,7 @@ fetch data. Not only can you utilize this as a rng, but you can also feed
 this data back into your system's entropy pool.
 
 In order to build it's dependencies, you'll need the following packages
-installed: svn gcc-g++ fuse-devel gccxml libattr-devel. On Fedora 17 and
+installed: svn gcc-c++ fuse-devel gccxml libattr-devel. On Fedora 17 and
 newer, you'll also need the kernel-modules-extra package installed for the
 cuse module.
 
