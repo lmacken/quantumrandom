@@ -36,6 +36,7 @@ IP = '150.203.48.55'
 JSON_API = 'http://%s/API/jsonI.php' % IP
 DATA_TYPES = ['uint16', 'hex16']
 MAX_LEN = 1024
+MAX_INT = 65536
 
 
 def get_data(data_type='uint16', array_length=1, block_size=1):
@@ -76,7 +77,19 @@ def hex(array_length=100, block_size=100):
 
 def randint(min=0, max=10):
     """Return an int between min and max"""
-    return int(math.floor(get_data()[0] / 65536.0 * (max - min) + min))
+    range = max - min
+    if range == 0:
+        # raise ValueError("range cannot be zero")  # meh
+        return min
+
+    modulos = MAX_INT / range
+    too_big = modulos * range
+    while True:
+        num = get_data()[0]
+        if num >= too_big:
+            continue
+        else:
+            return num / modulos + min
 
 
 def uint16(array_length=100):
