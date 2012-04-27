@@ -8,6 +8,23 @@ and a ``/dev/qrandom`` character device.
 
 :warning: Due to the lack of an SSL/TLS interface at the moment, all data is sent over the wire in clear text.
 
+Build Status
+------------
+
+.. |master| image:: https://secure.travis-ci.org/lmacken/quantumrandom.png?branch=master
+   :alt: Build Status - master branch
+
+.. |develop| image:: https://secure.travis-ci.org/lmacken/quantumrandom.png?branch=develop
+   :alt: Build Status - develop branch
+
++----------+-----------+
+| Branch   | Status    |
++==========+===========+
+| master   | |master|  |
++----------+-----------+
+| develop  | |develop| |
++----------+-----------+
+
 Installing
 ----------
 
