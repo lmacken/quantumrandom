@@ -23,7 +23,6 @@ A Python interface to the ANU Quantum Random Numbers Server.
 http://qrng.anu.edu.au
 """
 
-import math
 import urllib
 import urllib2
 import binascii
