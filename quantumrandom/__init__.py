@@ -20,7 +20,7 @@
 """
 A Python interface to the ANU Quantum Random Numbers Server.
 
-http://physics0054.anu.edu.au
+http://qrng.anu.edu.au
 """
 
 import math
