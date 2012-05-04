@@ -6,7 +6,7 @@ Number Generator (`qrng.anu.edu.au <http://qrng.anu.edu.au>`_). It
 communicates with their JSON API and provides a ``qrandom`` command-line
 tool, a Python API, and a Linux ``/dev/qrandom`` character device.
 
-:warning: Due to the lack of an SSL/TLS interface at the moment, all data is sent over the wire in clear text.
+.. note:: As of version 1.7, quantumrandom now uses SSL/TLS
 
 Installing
 ----------

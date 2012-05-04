@@ -31,8 +31,7 @@ try:
 except ImportError:
     import simplejson as json
 
-IP = '150.203.48.55'
-JSON_API = 'http://%s/API/jsonI.php' % IP
+URL = 'https://qrng.anu.edu.au/API/jsonI.php'
 DATA_TYPES = ['uint16', 'hex16']
 MAX_LEN = 1024
 MAX_INT = 65536
@@ -46,7 +45,7 @@ def get_data(data_type='uint16', array_length=1, block_size=1):
         raise Exception("array_length cannot be larger than %s" % MAX_LEN)
     if block_size > MAX_LEN:
         raise Exception("block_size cannot be larger than %s" % MAX_LEN)
-    url = JSON_API + '?' + urllib.urlencode({
+    url = URL + '?' + urllib.urlencode({
         'type': data_type,
         'length': array_length,
         'size': block_size,
