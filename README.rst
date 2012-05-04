@@ -131,6 +131,6 @@ tasks.
     >>> len(quantumrandom.binary())
     10000
     >>> quantumrandom.uint16()
-    array([24094, 13944, 22109, 22908, 34878, 33797, 47221, 21485, 37930, ...], dtype=uint16)
+    numpy.array([24094, 13944, 22109, 22908, 34878, 33797, 47221, 21485, 37930, ...], dtype=numpy.uint16)
     >>> quantumrandom.uint16().data[:10]
     '\x87\x7fY.\xcc\xab\xea\r\x1c`'
