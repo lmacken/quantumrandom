@@ -26,6 +26,7 @@ http://qrng.anu.edu.au
 import urllib
 import urllib2
 import binascii
+import math
 try:
     import json
 except ImportError:
@@ -34,7 +35,7 @@ except ImportError:
 URL = 'https://qrng.anu.edu.au/API/jsonI.php'
 DATA_TYPES = ['uint16', 'hex16']
 MAX_LEN = 1024
-MAX_INT = 65536
+INT_BITS = 16
 
 
 def get_data(data_type='uint16', array_length=1, block_size=1):
@@ -84,10 +85,17 @@ def randint(min=0, max=10, generator=None):
     if generator is None:
         generator = cached_generator()
 
-    modulos = MAX_INT / range
+    source_bits = int(math.ceil(math.log(range, 2)))
+    source_size = int(math.ceil(source_bits / float(INT_BITS)))
+    source_max = 2**(source_size * INT_BITS) - 1
+
+    modulos = source_max / range
     too_big = modulos * range
     while True:
-        num = generator.next()
+        num = 0
+        for x in xrange(source_size):
+            num <<= INT_BITS
+            num += generator.next()
         if num >= too_big:
             continue
         else:
@@ -107,4 +115,4 @@ def cached_generator(data_type='uint16', cache_size=1024):
             yield n
 
 
-__all__ = ['get_data', 'binary', 'hex', 'uint16']
+__all__ = ['get_data', 'binary', 'hex', 'uint16', 'cached_generator', 'randint']
