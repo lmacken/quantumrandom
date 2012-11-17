@@ -85,7 +85,7 @@ def randint(min=0, max=10, generator=None):
     if generator is None:
         generator = cached_generator()
 
-    source_bits = int(math.ceil(math.log(range, 2)))
+    source_bits = int(math.ceil(math.log(range + 1, 2)))
     source_size = int(math.ceil(source_bits / float(INT_BITS)))
     source_max = 2**(source_size * INT_BITS) - 1
 
