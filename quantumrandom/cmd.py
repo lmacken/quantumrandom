@@ -56,10 +56,11 @@ def main():
             maxblocks = int(sys.argv[sys.argv.index('--count')+1])  
             blocks = 0
         while True:
+            if maxblocks and blocks >= maxblocks:
+              break
             print generator(),
             blocks+=1
-            if blocks > maxblocks:
-              break
+
     except:
         pass
 
