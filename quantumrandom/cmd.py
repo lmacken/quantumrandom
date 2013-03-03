@@ -25,8 +25,8 @@ import sys
 import quantumrandom
 
 def main():
-    usage = "Usage: %s [--binary|--hex|--int --min MIN --max MAX]" % \
-            sys.argv[0]
+    usage = ("Usage: %s [--binary|--hex|--int --min MIN --max MAX]" + \
+             " [--count BLOCKS]") % sys.argv[0]
     generator = None
     # TODO -- use argparse here
     if '--binary' in sys.argv or '-b' in sys.argv:
@@ -49,8 +49,17 @@ def main():
         print usage
         sys.exit(1)
     try:
+        #Decided not use argpase to maintain 2.6 compatibility
+        maxblocks = 0
+        blocks = -1
+        if '--count' in sys.argv:
+            maxblocks = int(sys.argv[sys.argv.index('--count')+1])  
+            blocks = 0
         while True:
             print generator(),
+            blocks+=1
+            if blocks > maxblocks:
+              break
     except:
         pass
 
