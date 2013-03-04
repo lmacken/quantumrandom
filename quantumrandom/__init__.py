@@ -26,6 +26,7 @@ http://qrng.anu.edu.au
 import urllib
 import urllib2
 import binascii
+import math
 try:
     import json
 except ImportError:
@@ -34,7 +35,7 @@ except ImportError:
 URL = 'https://qrng.anu.edu.au/API/jsonI.php'
 DATA_TYPES = ['uint16', 'hex16']
 MAX_LEN = 1024
-MAX_INT = 65536
+INT_BITS = 16
 
 
 def get_data(data_type='uint16', array_length=1, block_size=1):
@@ -73,17 +74,28 @@ def hex(array_length=100, block_size=100):
     return ''.join(get_data('hex16', array_length, block_size))
 
 
-def randint(min=0, max=10):
-    """Return an int between min and max"""
+def randint(min=0, max=10, generator=None):
+    """Return an int between min and max. If given, takes from generator instead.
+    This can be useful to reuse the same cached_generator() instance over multiple calls."""
     range = max - min
     if range == 0:
         # raise ValueError("range cannot be zero")  # meh
         return min
 
-    modulos = MAX_INT / range
+    if generator is None:
+        generator = cached_generator()
+
+    source_bits = int(math.ceil(math.log(range + 1, 2)))
+    source_size = int(math.ceil(source_bits / float(INT_BITS)))
+    source_max = 2**(source_size * INT_BITS) - 1
+
+    modulos = source_max / range
     too_big = modulos * range
     while True:
-        num = get_data()[0]
+        num = 0
+        for x in xrange(source_size):
+            num <<= INT_BITS
+            num += generator.next()
         if num >= too_big:
             continue
         else:
@@ -96,4 +108,11 @@ def uint16(array_length=100):
     return numpy.array(get_data('uint16', array_length), dtype=numpy.uint16)
 
 
-__all__ = ['get_data', 'binary', 'hex', 'uint16']
+def cached_generator(data_type='uint16', cache_size=1024):
+    """Returns numbers. Caches numbers to avoid latency."""
+    while 1:
+        for n in get_data(data_type, cache_size, cache_size):
+            yield n
+
+
+__all__ = ['get_data', 'binary', 'hex', 'uint16', 'cached_generator', 'randint']
