@@ -50,7 +50,7 @@ def get_data(data_type='uint16', array_length=1, block_size=1):
         'type': data_type,
         'length': array_length,
         'size': block_size,
-        })
+    })
     data = json.loads(urllib2.urlopen(url).read(), object_hook=_object_hook)
     assert data['success'] is True, data
     assert data['length'] == array_length, data
@@ -87,7 +87,7 @@ def randint(min=0, max=10, generator=None):
 
     source_bits = int(math.ceil(math.log(range + 1, 2)))
     source_size = int(math.ceil(source_bits / float(INT_BITS)))
-    source_max = 2**(source_size * INT_BITS) - 1
+    source_max = 2 ** (source_size * INT_BITS) - 1
 
     modulos = source_max / range
     too_big = modulos * range
