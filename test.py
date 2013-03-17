@@ -59,8 +59,11 @@ class TestQuantumRandom(unittest.TestCase):
 
     def test_uint16(self):
         ints = quantumrandom.uint16()
-        assert len(ints) == 100
-        assert len(ints.data) == 200
+        assert len(ints) == 100, len(ints)
+        if hasattr(ints.data, 'nbytes'):  # python3 memoryview
+            assert ints.data.nbytes == 200, ints.data.nbytes
+        else:
+            assert len(ints.data) == 200, len(ints.data)
 
     def test_randint(self):
         for i in range(5):

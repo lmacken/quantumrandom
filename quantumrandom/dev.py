@@ -24,6 +24,7 @@ import sys
 import cuse
 import time
 import threading
+import traceback
 import quantumrandom
 
 from cuse import cuse_api as libcuse
@@ -54,9 +55,8 @@ class RandomDataFetcher(threading.Thread):
                     continue
                 buffer.append(quantumrandom.binary())
                 log("[Thread %d] New random data buffered" % self.id)
-        except Exception, e:
-            import traceback
-            traceback.print_exc()
+        except:
+            log(traceback.format_exc())
         self.running = False
         log("[Thread %d] Done!" % self.id)
 
@@ -71,7 +71,7 @@ class QuantumRandomDevice(object):
         global buffer, threads
         if not threads:
             log("Creating %d threads" % self.num_threads)
-            for i, t in enumerate(range(self.num_threads)):
+            for i, t in enumerate(list(range(self.num_threads))):
                 thread = RandomDataFetcher(i)
                 thread.setDaemon(True)
                 thread.start()
@@ -122,8 +122,9 @@ def main():
 
     try:
         cuse.main(True)
-    except Exception, err:
-        log("CUSE main ended %s" % str(err))
+    except:
+        log(traceback.format_exc())
+        log("CUSE main ended")
 
 
 if __name__ == '__main__':
