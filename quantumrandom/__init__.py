@@ -37,6 +37,7 @@ try:
 except ImportError:
     import simplejson as json
 
+VERSION = '1.9.0'
 URL = 'https://qrng.anu.edu.au/API/jsonI.php'
 DATA_TYPES = ['uint16', 'hex16']
 MAX_LEN = 1024
