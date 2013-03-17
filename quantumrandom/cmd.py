@@ -20,6 +20,7 @@
 """
 A tool for printing random data from the ANU Quantum Random Number Generator
 """
+from __future__ import print_function
 
 import sys
 import quantumrandom
@@ -39,14 +40,14 @@ def main():
             min = int(sys.argv[sys.argv.index('--min') + 1])
             max = int(sys.argv[sys.argv.index('--max') + 1])
         except ValueError:
-            print usage
+            print(usage)
             sys.exit(1)
 
-        print quantumrandom.randint(min=min, max=max)
+        print(quantumrandom.randint(min=min, max=max))
         sys.exit(0)
 
     if not generator:
-        print usage
+        print(usage)
         sys.exit(1)
     try:
         # Decided not use argpase to maintain 2.6 compatibility
@@ -58,7 +59,7 @@ def main():
         while True:
             if maxblocks and blocks >= maxblocks:
                 break
-            print generator(),
+            print(generator(), end=' ')
             blocks += 1
 
     except:

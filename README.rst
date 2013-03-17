@@ -6,16 +6,16 @@ Number Generator (`qrng.anu.edu.au <http://qrng.anu.edu.au>`_). It
 communicates with their JSON API and provides a ``qrandom`` command-line
 tool, a Python API, and a Linux ``/dev/qrandom`` character device.
 
-.. note:: As of version 1.7, quantumrandom now uses SSL/TLS
+quantumrandom works on Python 2 and 3.
+
+.. note:: As of version 1.7, quantumrandom now uses SSL/TLS by default.
 
 Installing
 ----------
 
 ::
 
-    $ virtualenv env
-    $ source env/bin/activate
-    $ pip install quantumrandom
+    pip install quantumrandom
 
 Command-line tool
 -----------------
@@ -51,6 +51,8 @@ In order to build it's dependencies, you'll need the following packages
 installed: svn gcc-c++ fuse-devel gccxml libattr-devel. On Fedora 17 and
 newer, you'll also need the kernel-modules-extra package installed for the
 cuse module.
+
+.. note:: The /dev/qrandom character device currently only supports Python2
 
 ::
 
