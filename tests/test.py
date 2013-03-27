@@ -1,5 +1,20 @@
+import time
 import unittest
 import quantumrandom
+
+from mock import patch
+from surrogate import surrogate
+
+return_data = None
+
+class MockCuse(object):
+
+    def fuse_reply_buf(self, req, data, length):
+        global return_data
+        return_data = data
+
+    def fuse_reply_err(self, req, err):
+        pass
 
 
 class TestQuantumRandom(unittest.TestCase):
@@ -71,6 +86,16 @@ class TestQuantumRandom(unittest.TestCase):
                 for k in range(3):
                     val = quantumrandom.randint(i, j)
                     assert(val >= i and val < j)
+
+    @surrogate('cuse.cuse_api')
+    @patch('cuse.cuse_api', new_callable=MockCuse)
+    def test_dev(self, *args, **kw):
+        global return_data
+        from quantumrandom.dev import QuantumRandomDevice
+        dev = QuantumRandomDevice(num_threads=3)
+        dev.read(None, 10000, 0, None)
+        self.assertEquals(len(return_data), 10000)
+        dev.release(None, None)
 
 
 if __name__ == '__main__':
