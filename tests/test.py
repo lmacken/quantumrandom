@@ -37,14 +37,14 @@ class TestQuantumRandom(unittest.TestCase):
 
     def test_uint16_json_api_long_array(self):
         try:
-            data = quantumrandom.get_data('uint16', 101, 1)
+            data = quantumrandom.get_data('uint16', 1025, 1)
             assert False, "Invalid array length didn't cause error: %s" % data
         except:
             pass
 
     def test_uint16_json_api_large_blocksize(self):
         try:
-            data = quantumrandom.get_data('uint16', 1, 101)
+            data = quantumrandom.get_data('uint16', 1, 1025)
             assert False, "Invalid block size didn't cause error: %s" % data
         except:
             pass
@@ -81,6 +81,7 @@ class TestQuantumRandom(unittest.TestCase):
             assert len(ints.data) == 200, len(ints.data)
 
     def test_randint(self):
+        assert(quantumrandom.randint(0, 0) == 0)
         for i in range(5):
             for j in range(i + 1, 5):
                 for k in range(3):
