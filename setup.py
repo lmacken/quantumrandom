@@ -31,6 +31,8 @@ setup(name='quantumrandom',
       include_package_data=True,
       zip_safe=True,
       install_requires=requires,
+      test_suite='nose.collector',
+      tests_require=['nose', 'mock'],
       entry_points="""
         [console_scripts]
         qrandom = quantumrandom.cmd:main
