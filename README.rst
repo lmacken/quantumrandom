@@ -1,6 +1,11 @@
 Tools for utilizing the ANU Quantum Random Numbers Server
 =========================================================
 
+.. image:: https://pypip.in/v/quantumrandom/badge.png
+   :target: https://crate.io/packages/quantumrandom
+.. image:: https://pypip.in/d/quantumrandom/badge.png
+   :target: https://crate.io/packages/quantumrandom
+
 This project provides tools for interacting with The ANU Quantum Random
 Number Generator (`qrng.anu.edu.au <http://qrng.anu.edu.au>`_). It
 communicates with their JSON API and provides a ``qrandom`` command-line
