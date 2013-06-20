@@ -7,7 +7,7 @@ f = open('README.rst')
 long_description = f.read()
 f.close()
 
-requires = ['six', 'numpy']
+requires = ['six']
 if sys.version_info[0] == 2:
     if sys.version_info[1] in (4, 5):
         requires.append('simplejson < 2.0.10')

@@ -1,11 +1,12 @@
-import time
 import unittest
 import quantumrandom
 
 from mock import patch
 from surrogate import surrogate
+from nose.plugins.skip import SkipTest
 
 return_data = None
+
 
 class MockCuse(object):
 
@@ -73,7 +74,10 @@ class TestQuantumRandom(unittest.TestCase):
             assert h in '1234567890abcdef', h
 
     def test_uint16(self):
-        ints = quantumrandom.uint16()
+        try:
+            ints = quantumrandom.uint16()
+        except ImportError:
+            raise SkipTest('NumPy not installed')
         assert len(ints) == 100, len(ints)
         if hasattr(ints.data, 'nbytes'):  # python3 memoryview
             assert ints.data.nbytes == 200, ints.data.nbytes

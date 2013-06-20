@@ -8,7 +8,6 @@ python:
   - 3.3
 
 before_install:
-  - if [[ ${TRAVIS_PYTHON_VERSION:0:1} == '3' ]]; then sudo apt-get install python3-dev; fi
   - if [[ $TRAVIS_PYTHON_VERSION != '2.5' ]]; then pip install coverage coveralls --use-mirrors && export HAS_COVERALLS=1; fi
 
 install:
