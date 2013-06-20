@@ -8,8 +8,9 @@ long_description = f.read()
 f.close()
 
 requires = []
-if sys.version_info[:2] == (2, 4):
-    requires.append('simplejson < 2.0.10')
+if sys.version_info[0] == 2:
+    if sys.version_info[1] in (4, 5):
+        requires.append('simplejson < 2.0.10')
 
 setup(name='quantumrandom',
       version=version,
