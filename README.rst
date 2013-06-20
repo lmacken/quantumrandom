@@ -1,6 +1,10 @@
 Tools for utilizing the ANU Quantum Random Numbers Server
 =========================================================
 
+.. image:: https://api.travis-ci.org/lmacken/quantumrandom.png?branch=develop
+   :target: http://travis-ci.org/lmacken/quantumrandom
+.. image:: https://coveralls.io/repos/lmacken/quantumrandom/badge.png?branch=develop
+   :target: https://coveralls.io/r/lmacken/quantumrandom
 .. image:: https://pypip.in/v/quantumrandom/badge.png
    :target: https://crate.io/packages/quantumrandom
 .. image:: https://pypip.in/d/quantumrandom/badge.png
