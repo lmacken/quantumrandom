@@ -63,7 +63,7 @@ def get_data(data_type='uint16', array_length=1, block_size=1):
     return data['data']
 
 
-if sys.version_info.major == 2:
+if sys.version_info[0] == 2:
     def get_json(url):
         return json.loads(urlopen(url).read(), object_hook=_object_hook)
 
