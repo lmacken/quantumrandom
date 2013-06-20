@@ -72,6 +72,16 @@ if sys.version_info[0] == 2:
         if obj.get('type') == 'string':
             obj['data'] = [s.encode('ascii') for s in obj['data']]
         return obj
+
+    if sys.version_info[1] in (4, 5):
+        _sentinel = object()
+        def next(it, default=_sentinel):
+            try:
+                return it.next()
+            except StopIteration:
+                if default is _sentinel:
+                    raise
+                return default
 else:
     def get_json(url):
         return json.loads(urlopen(url).read().decode('ascii'))
