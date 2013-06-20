@@ -21,6 +21,7 @@
 """ A multi-threaded Quantum Random Generator character device in userspace """
 
 import sys
+import six
 import cuse
 import time
 import threading
@@ -76,7 +77,7 @@ class QuantumRandomDevice(object):
                 thread.setDaemon(True)
                 thread.start()
                 threads.append(thread)
-        data = ''
+        data = six.b('')
         while len(data) < size:
             try:
                 data += buffer.pop(0)
