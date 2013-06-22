@@ -94,6 +94,7 @@ Testing the randomness for `FIPS 140-2 <https://en.wikipedia.org/wiki/FIPS_140-2
 You can utilize the `rngtest` tool in pipe mode to ensure that all of your data is FIPS 140-2 compliant:
 
 ::
+
     $ cat /dev/qrandom | rngtest --pipe
 
 Adding entropy to the Linux random number generator
