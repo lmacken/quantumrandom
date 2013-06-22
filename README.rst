@@ -91,6 +91,11 @@ Testing the randomness for `FIPS 140-2 <https://en.wikipedia.org/wiki/FIPS_140-2
     rngtest: FIPS tests speed: (min=10.949; avg=94.538; max=161.640)Mibits/s
     rngtest: Program run time: 50708319 microseconds
 
+You can utilize the `rngtest` tool in pipe mode to ensure that all of your data is FIPS 140-2 compliant:
+
+::
+    $ cat /dev/qrandom | rngtest --pipe
+
 Adding entropy to the Linux random number generator
 ---------------------------------------------------
 
