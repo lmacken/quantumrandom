@@ -65,7 +65,7 @@ cuse module.
 
 ::
 
-    pip install ctypeslib hg+https://cusepy.googlecode.com/hg
+    pip install ctypeslib==dev hg+https://cusepy.googlecode.com/hg
     sudo modprobe cuse
     sudo chmod 666 /dev/cuse
     qrandom-dev
