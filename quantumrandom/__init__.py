@@ -38,14 +38,16 @@ try:
 except ImportError:
     import simplejson as json
 
-VERSION = '1.9.0'
+from quantumrandom.qrandom import QuantumRandom
+
+VERSION = '1.10.0'
 URL = 'https://qrng.anu.edu.au/API/jsonI.php'
 DATA_TYPES = ['uint16', 'hex16']
 MAX_LEN = 1024
 INT_BITS = 16
 
 
-def get_data(data_type='uint16', array_length=1, block_size=1):
+def get_data(data_type='uint16', array_length=1, block_size=1, timeout=None):
     """Fetch data from the ANU Quantum Random Numbers JSON API"""
     if data_type not in DATA_TYPES:
         raise Exception("data_type must be one of %s" % DATA_TYPES)
@@ -58,15 +60,15 @@ def get_data(data_type='uint16', array_length=1, block_size=1):
         'length': array_length,
         'size': block_size,
     })
-    data = get_json(url)
+    data = get_json(url, timeout=timeout)
     assert data['success'] is True, data
     assert data['length'] == array_length, data
     return data['data']
 
 
 if sys.version_info[0] == 2:
-    def get_json(url):
-        return json.loads(urlopen(url).read(), object_hook=_object_hook)
+    def get_json(url, timeout=None):
+        return json.loads(urlopen(url, timeout=timeout).read(), object_hook=_object_hook)
 
     def _object_hook(obj):
         """We are only dealing with ASCII characters"""
@@ -84,21 +86,21 @@ if sys.version_info[0] == 2:
                     raise
                 return default
 else:
-    def get_json(url):
-        return json.loads(urlopen(url).read().decode('ascii'))
+    def get_json(url, timeout=None):
+        return json.loads(urlopen(url, timeout=timeout).read().decode('ascii'))
 
 
-def binary(array_length=100, block_size=100):
+def binary(array_length=100, block_size=100, **kwargs):
     """Return a chunk of binary data"""
-    return binascii.unhexlify(six.b(hex(array_length, block_size)))
+    return binascii.unhexlify(six.b(hex(array_length, block_size, **kwargs)))
 
 
-def hex(array_length=100, block_size=100):
+def hex(array_length=100, block_size=100, **kwargs):
     """Return a chunk of hex"""
-    return ''.join(get_data('hex16', array_length, block_size))
+    return ''.join(get_data('hex16', array_length, block_size, **kwargs))
 
 
-def randint(min=0, max=10, generator=None):
+def randint(min=0, max=10, generator=None, **kwargs):
     """Return an int between min and max. If given, takes from generator instead.
     This can be useful to reuse the same cached_generator() instance over multiple calls."""
     rand_range = max - min
@@ -107,7 +109,7 @@ def randint(min=0, max=10, generator=None):
         return min
 
     if generator is None:
-        generator = cached_generator()
+        generator = cached_generator(**kwargs)
 
     source_bits = int(math.ceil(math.log(rand_range + 1, 2)))
     source_size = int(math.ceil(source_bits / float(INT_BITS)))
@@ -126,17 +128,17 @@ def randint(min=0, max=10, generator=None):
             return num / modulos + min
 
 
-def uint16(array_length=100):
+def uint16(array_length=100, **kwargs):
     """Return a numpy array of uint16 numbers"""
     import numpy
-    return numpy.array(get_data('uint16', array_length), dtype=numpy.uint16)
+    return numpy.array(get_data('uint16', array_length, **kwargs), dtype=numpy.uint16)
 
 
-def cached_generator(data_type='uint16', cache_size=1024):
+def cached_generator(data_type='uint16', cache_size=1024, **kwargs):
     """Returns numbers. Caches numbers to avoid latency."""
     while 1:
-        for n in get_data(data_type, cache_size, cache_size):
+        for n in get_data(data_type, cache_size, cache_size, **kwargs):
             yield n
 
 
-__all__ = ['get_data', 'binary', 'hex', 'uint16', 'cached_generator', 'randint']
+__all__ = ['get_data', 'binary', 'hex', 'uint16', 'cached_generator', 'randint', 'QuantumRandom']
