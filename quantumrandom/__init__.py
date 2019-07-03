@@ -101,7 +101,7 @@ def hex(array_length=100, block_size=100):
 def randint(min=0, max=10, generator=None):
     """Return an int between min and max. If given, takes from generator instead.
     This can be useful to reuse the same cached_generator() instance over multiple calls."""
-    rand_range = max - min
+    rand_range = (max + 1) - min
     if rand_range == 0:
         # raise ValueError("range cannot be zero")  # meh
         return min
