@@ -1,13 +1,13 @@
 from setuptools import setup, find_packages
 import sys
 
-version = '1.9.0'
+version = '2.0.0'
 
 f = open('README.rst')
 long_description = f.read()
 f.close()
 
-requires = ['six']
+requires = ['six', 'requests']
 if sys.version_info[0] == 2:
     if sys.version_info[1] in (4, 5):
         requires.append('simplejson < 2.0.10')

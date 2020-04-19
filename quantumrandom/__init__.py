@@ -24,21 +24,20 @@ http://qrng.anu.edu.au
 """
 
 import binascii
+import requests
 import math
 import sys
 import six
 try:
     from urllib.parse import urlencode
-    from urllib.request import urlopen
 except ImportError:
     from urllib import urlencode
-    from urllib2 import urlopen
 try:
     import json
 except ImportError:
     import simplejson as json
 
-VERSION = '1.9.0'
+VERSION = '2.0.0'
 URL = 'https://qrng.anu.edu.au/API/jsonI.php'
 DATA_TYPES = ['uint16', 'hex16']
 MAX_LEN = 1024
@@ -66,7 +65,7 @@ def get_data(data_type='uint16', array_length=1, block_size=1):
 
 if sys.version_info[0] == 2:
     def get_json(url):
-        return json.loads(urlopen(url).read(), object_hook=_object_hook)
+        return requests.get(url, verify=False).json()
 
     def _object_hook(obj):
         """We are only dealing with ASCII characters"""
@@ -85,7 +84,7 @@ if sys.version_info[0] == 2:
                 return default
 else:
     def get_json(url):
-        return json.loads(urlopen(url).read().decode('ascii'))
+        return requests.get(url, verify=False).json()
 
 
 def binary(array_length=100, block_size=100):
