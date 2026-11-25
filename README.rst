@@ -245,12 +245,12 @@ Releasing
        git tag -a 2.0.0 -m "quantumrandom 2.0.0"
        git push origin develop 2.0.0
 
-Publishing relies on PyPI's `trusted publishing
-<https://docs.pypi.org/trusted-publishers/>`_, which has to be set up once. On
-PyPI, add a trusted publisher for the project with owner ``lmacken``,
-repository ``quantumrandom``, workflow ``publish.yml``, and environment
-``pypi``.
+The workflow publishes through PyPI's `trusted publishing
+<https://docs.pypi.org/trusted-publishers/>`_, so there is no API token to
+manage. PyPI trusts the ``publish.yml`` workflow in the
+``lmacken/quantumrandom`` repository, running in its ``pypi`` environment, and
+each file that it uploads comes with an attestation of where it was built.
 
-To rehearse a release on TestPyPI first, which is optional, add the same
-publisher there with environment ``testpypi``, and then run the **Publish**
-workflow manually.
+The **Publish** workflow can also be run manually to publish to TestPyPI,
+which has its own trusted publishers, and expects the ``testpypi``
+environment.
