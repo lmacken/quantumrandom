@@ -232,3 +232,25 @@ The tests do not use the network or need an API key. One additional test
 makes a single request to the real API, and only runs if you ask it to::
 
     QUANTUMRANDOM_LIVE_TEST=1 QUANTUMRANDOM_API_KEY=your-api-key pytest tests/test_live.py
+
+Releasing
+---------
+
+1. Update ``VERSION`` in ``quantumrandom/__init__.py``, and add the release to
+   ``CHANGELOG.rst``.
+2. Commit, tag, and push the release. Pushing a tag that starts with a digit
+   runs ``.github/workflows/publish.yml``, which builds the distributions and
+   publishes them to PyPI::
+
+       git tag -a 2.0.0 -m "quantumrandom 2.0.0"
+       git push origin develop 2.0.0
+
+Publishing relies on PyPI's `trusted publishing
+<https://docs.pypi.org/trusted-publishers/>`_, which has to be set up once. On
+PyPI, add a trusted publisher for the project with owner ``lmacken``,
+repository ``quantumrandom``, workflow ``publish.yml``, and environment
+``pypi``.
+
+To rehearse a release on TestPyPI first, which is optional, add the same
+publisher there with environment ``testpypi``, and then run the **Publish**
+workflow manually.
