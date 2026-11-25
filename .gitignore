@@ -1,3 +1,7 @@
 *.egg*
 *.pyc
 *.swp
+__pycache__/
+.pytest_cache/
+build/
+dist/

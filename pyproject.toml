@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "quantumrandom"
+dynamic = ["version"]
+description = "A Python interface to the ANU Quantum Random Numbers Server"
+readme = "README.rst"
+requires-python = ">=3.9"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{name = "Luke Macken", email = "luke@phorex.org"}]
+keywords = ["quantum", "random", "qrng", "anu"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
+    "Topic :: Scientific/Engineering :: Mathematics",
+]
+
+[project.optional-dependencies]
+numpy = ["numpy"]
+test = ["pytest"]
+
+[project.urls]
+Homepage = "https://github.com/lmacken/quantumrandom"
+Issues = "https://github.com/lmacken/quantumrandom/issues"
+Changelog = "https://github.com/lmacken/quantumrandom/blob/develop/CHANGELOG.rst"
+
+[project.scripts]
+qrandom = "quantumrandom.cmd:main"
+
+[tool.setuptools]
+packages = ["quantumrandom"]
+
+[tool.setuptools.dynamic]
+version = {attr = "quantumrandom.VERSION"}
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

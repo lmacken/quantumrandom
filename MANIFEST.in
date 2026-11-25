@@ -1,2 +1,2 @@
-include README.rst
-include test.py
+include CHANGELOG.rst
+recursive-include tests *.py

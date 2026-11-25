@@ -20,51 +20,83 @@
 """
 A tool for printing random data from the ANU Quantum Random Number Generator
 """
-from __future__ import print_function
 
+import argparse
+import itertools
+import os
 import sys
+
 import quantumrandom
 
 
-def main():
-    usage = ("Usage: %s [--binary|--hex|--int --min MIN --max MAX]" +
-             " [--count BLOCKS]") % sys.argv[0]
-    generator = None
-    if '--binary' in sys.argv or '-b' in sys.argv:
-        generator = quantumrandom.binary
-    if '--hex' in sys.argv or '-h' in sys.argv:
-        generator = quantumrandom.hex
-    if '--int' in sys.argv or '-i' in sys.argv:
-        # Special case.  Just print one.
-        try:
-            min = int(sys.argv[sys.argv.index('--min') + 1])
-            max = int(sys.argv[sys.argv.index('--max') + 1])
-        except ValueError:
-            print(usage)
-            sys.exit(1)
+def parse_args(argv=None):
+    parser = argparse.ArgumentParser(
+        prog='qrandom',
+        description="Print random data from the ANU Quantum Random Number "
+                    "Generator.",
+        epilog="An API key is required. Create a free one at "
+               "https://quantumnumbers.anu.edu.au and export it as %s. "
+               "Each block of --hex or --binary output costs one API request, "
+               "while --int gets thousands of numbers out of each request."
+               % quantumrandom.API_KEY_ENV)
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument('-i', '--int', action='store_true',
+                      help="print an integer between --min and --max, "
+                           "inclusive")
+    mode.add_argument('-x', '--hex', action='store_true',
+                      help="print blocks of 40960 hex characters")
+    mode.add_argument('-b', '--binary', action='store_true',
+                      help="write blocks of 20480 raw bytes")
+    parser.add_argument('--min', type=int, default=0,
+                        help="smallest integer to print with --int "
+                             "(default: %(default)s)")
+    parser.add_argument('--max', type=int, default=10,
+                        help="largest integer to print with --int "
+                             "(default: %(default)s)")
+    parser.add_argument('-c', '--count', type=int, default=1, metavar='N',
+                        help="how many integers or blocks to output, or 0 to "
+                             "keep going until interrupted "
+                             "(default: %(default)s)")
+    parser.add_argument('-k', '--api-key', metavar='KEY',
+                        help="API key to use instead of $%s. Note that other "
+                             "users on this machine can see command-line "
+                             "arguments." % quantumrandom.API_KEY_ENV)
+    parser.add_argument('--version', action='version',
+                        version='%(prog)s ' + quantumrandom.VERSION)
+    args = parser.parse_args(argv)
+    if args.count < 0:
+        parser.error("--count cannot be negative")
+    if args.max < args.min:
+        parser.error("--max cannot be less than --min")
+    return args
 
-        print(quantumrandom.randint(min=min, max=max))
-        sys.exit(0)
 
-    if not generator:
-        print(usage)
-        sys.exit(1)
+def main(argv=None):
+    args = parse_args(argv)
+    if args.api_key:
+        quantumrandom.set_api_key(args.api_key)
     try:
-        # Decided not use argpase to maintain 2.6 compatibility
-        maxblocks = 0
-        blocks = -1
-        if '--count' in sys.argv:
-            maxblocks = int(sys.argv[sys.argv.index('--count') + 1])
-            blocks = 0
-        while True:
-            if maxblocks and blocks >= maxblocks:
-                break
-            print(generator(), end=' ')
-            blocks += 1
-
-    except:
-        pass
+        for _ in range(args.count) if args.count else itertools.count():
+            if args.int:
+                print(quantumrandom.randint(args.min, args.max))
+            elif args.hex:
+                print(quantumrandom.hex())
+            else:
+                sys.stdout.buffer.write(quantumrandom.binary())
+            sys.stdout.flush()
+    except quantumrandom.QuantumRandomError as e:
+        sys.stderr.write("qrandom: %s\n" % e)
+        return 1
+    except KeyboardInterrupt:
+        return 130
+    except BrokenPipeError:
+        # Whatever we were piped into stopped reading. Point stdout at
+        # /dev/null so that the interpreter does not complain about not being
+        # able to flush it on the way out.
+        os.dup2(os.open(os.devnull, os.O_WRONLY), sys.stdout.fileno())
+        return 1
+    return 0
 
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())

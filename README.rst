@@ -1,23 +1,28 @@
 Tools for utilizing the ANU Quantum Random Numbers Server
 =========================================================
 
-.. image:: https://api.travis-ci.org/lmacken/quantumrandom.png?branch=develop
-   :target: http://travis-ci.org/lmacken/quantumrandom
-.. image:: https://coveralls.io/repos/lmacken/quantumrandom/badge.png?branch=develop
-   :target: https://coveralls.io/r/lmacken/quantumrandom
+.. image:: https://github.com/lmacken/quantumrandom/actions/workflows/tests.yml/badge.svg?branch=develop
+   :target: https://github.com/lmacken/quantumrandom/actions/workflows/tests.yml
 .. image:: https://img.shields.io/pypi/v/quantumrandom.svg
-   :target: https://crate.io/packages/quantumrandom
+   :target: https://pypi.org/project/quantumrandom/
 .. image:: https://img.shields.io/pypi/dm/quantumrandom.svg
-   :target: https://crate.io/packages/quantumrandom
+   :target: https://pypi.org/project/quantumrandom/
 
 This project provides tools for interacting with The ANU Quantum Random
-Number Generator (`qrng.anu.edu.au <http://qrng.anu.edu.au>`_). It
-communicates with their JSON API and provides a ``qrandom`` command-line
-tool, a Python API, and a Linux ``/dev/qrandom`` character device.
+Number Generator (`quantumnumbers.anu.edu.au
+<https://quantumnumbers.anu.edu.au>`_), which generates true random numbers in
+real time by measuring the quantum fluctuations of the vacuum. It communicates
+with their JSON API and provides a ``qrandom`` command-line tool and a Python
+API, including a drop-in replacement for Python's own ``random.Random``.
 
-quantumrandom works on Python 2 and 3.
+quantumrandom works on Python 3.9 and newer, and has no dependencies.
 
-.. note:: As of version 1.7, quantumrandom now uses SSL/TLS by default.
+.. note:: As of version 2.0, quantumrandom uses ANU's new API, which requires
+   an API key. The ``qrng.anu.edu.au`` service that earlier versions talked to
+   has been shut down, so those versions no longer work. There are a few
+   other changes to be aware of when upgrading, which are listed in the
+   `changelog
+   <https://github.com/lmacken/quantumrandom/blob/develop/CHANGELOG.rst>`_.
 
 Installing
 ----------
@@ -26,6 +31,45 @@ Installing
 
     pip install quantumrandom
 
+Getting an API key
+------------------
+
+Sign up at `quantumnumbers.anu.edu.au <https://quantumnumbers.anu.edu.au>`_ to
+create an API key. At the time of writing the free plan allows 100 requests
+per month, at up to 1 request per second. A paid plan, billed per request
+through the AWS Marketplace, has no monthly limit and allows 100 requests per
+second. See their `pricing <https://quantumnumbers.anu.edu.au/pricing>`_ for
+the details. quantumrandom works the same way with a key from any plan.
+
+The easiest way to provide your key is with an environment variable, which
+both the Python API and the ``qrandom`` command will pick up::
+
+    export QUANTUMRANDOM_API_KEY=your-api-key
+
+You can also set it from Python, which takes precedence over the environment::
+
+    >>> import quantumrandom
+    >>> quantumrandom.set_api_key('your-api-key')
+
+Lastly, anything that makes API requests accepts an ``api_key`` argument, for
+when you need to use more than one key.
+
+Making the most of your requests
+--------------------------------
+
+ANU counts requests, not the amount of data that they return, and a single
+request can return anything up to 20480 bytes. quantumrandom is designed
+around this: it asks for as much as it can at a time, and keeps what you have
+not used yet in memory so that it does not need to ask again until it runs
+out. For example, rolling a die a thousand times with
+``quantumrandom.randint(1, 6)`` costs one request, not a thousand.
+
+Random data is only ever handed out once, and the buffered data lasts only as
+long as your Python process does.
+
+If a request is rate limited it is retried automatically, after a short
+pause, up to ``quantumrandom.MAX_RETRIES`` (3) times.
+
 Command-line tool
 -----------------
 
@@ -33,121 +77,158 @@ Command-line tool
 
     $ qrandom --int --min 5 --max 15
     7
-    $ qrandom --binary
-    ���I�%��e(�1��c��Ee�4�������j�Կ��=�^H�c�u
-    oq��G��Z�^���fK�0_��h��s�b��AE=�rR~���(�^Q�)4��{c�������X{f��a�Bk�N%#W
-    +a�a̙�IB�,S�!ꀔd�2H~�X�Z����R��.f
-    ...
+    $ qrandom --int --min 1 --max 6 --count 5
+    5
+    6
+    4
+    4
+    1
     $ qrandom --hex
     1dc59fde43b5045120453186d45653dd455bd8e6fc7d8c591f0018fa9261ab2835eb210e8
     e267cf35a54c02ce2a93b3ec448c4c7aa84fdedb61c7b0d87c9e7acf8e9fdadc8d68bcaa5a
     ...
-    $ qrandom --binary | dd of=data
-    ^C1752+0 records in
-    1752+0 records out
-    897024 bytes (897 kB) copied, 77.7588 s, 11.5 kB/s
+    $ qrandom --binary > data
+    $ ls -l data
+    -rw-r--r-- 1 user user 20480 Nov 24 12:00 data
 
+``--hex`` and ``--binary`` output one block of 20480 bytes, at the cost of one
+API request. Use ``--count`` to ask for more than one block (or more than one
+integer), or ``--count 0`` to keep going until interrupted::
 
-Creating /dev/qrandom
----------------------
+    $ qrandom --binary --count 0 | dd of=data
 
-quantumrandom comes equipped with a multi-threaded character device in
-userspace. When read from, this device fires up a bunch of threads to
-fetch data. Not only can you utilize this as a rng, but you can also feed
-this data back into your system's entropy pool.
+.. warning:: ``--count 0`` makes one API request after another for as long as
+   it runs. On the free plan that will use up your month's requests in a
+   couple of minutes.
 
-In order to build it's dependencies, you'll need the following packages
-installed: ``svn``, ``gcc-c++``, ``fuse-devel``, ``gccxml``, ``libattr-devel``.
-On Fedora 17 and newer, you'll also need the `kernel-modules-extra` package
-installed for the cuse module.
-
-.. note:: The /dev/qrandom character device currently only supports Python2
-
-::
-
-    pip install ctypeslib==dev hg+https://cusepy.googlecode.com/hg
-    sudo modprobe cuse
-    sudo chmod 666 /dev/cuse
-    qrandom-dev
-    sudo chmod 666 /dev/qrandom
-
-By default it will use 3 threads, which can be changed by passing '-t #' into the qrandom-dev.
-
-Testing the randomness for `FIPS 140-2 <https://en.wikipedia.org/wiki/FIPS_140-2>`_ compliance
-----------------------------------------------------------------------------------------------
-
-::
-
-    $ cat /dev/qrandom | rngtest --blockcount=1000
-    rngtest: bits received from input: 20000032
-    rngtest: FIPS 140-2 successes: 1000
-    rngtest: FIPS 140-2 failures: 0
-    rngtest: FIPS 140-2(2001-10-10) Monobit: 0
-    rngtest: FIPS 140-2(2001-10-10) Poker: 0
-    rngtest: FIPS 140-2(2001-10-10) Runs: 0
-    rngtest: FIPS 140-2(2001-10-10) Long run: 0
-    rngtest: FIPS 140-2(2001-10-10) Continuous run: 0
-    rngtest: input channel speed: (min=17.696; avg=386.711; max=4882812.500)Kibits/s
-    rngtest: FIPS tests speed: (min=10.949; avg=94.538; max=161.640)Mibits/s
-    rngtest: Program run time: 50708319 microseconds
-
-You can utilize the `rngtest` tool in pipe mode to ensure that all of your data is FIPS 140-2 compliant:
-
-::
-
-    $ cat /dev/qrandom | rngtest --pipe
-
-Adding entropy to the Linux random number generator
----------------------------------------------------
-
-::
-
-    sudo rngd --rng-device=/dev/qrandom --random-device=/dev/random --foreground
-
-Monitoring your available entropy levels
-----------------------------------------
-
-::
-
-    watch -n 1 cat /proc/sys/kernel/random/entropy_avail
+Run ``qrandom --help`` for the full list of options.
 
 Python API
 ----------
 
-The quantumrandom Python module contains a low-level ``get_data``
-function, which is modelled after the ANU Quantum Random Number
-Generator's JSON API. It returns variable-length lists of either
-``uint16`` or ``hex16`` data.
+The simplest way to get going is with ``quantumrandom.QuantumRandom``, which
+is a subclass of `random.Random
+<https://docs.python.org/3/library/random.html>`_ that gets its randomness
+from the quantum random number generator. It supports everything that the
+``random`` module does.
+
+::
+
+    >>> import quantumrandom
+    >>> qr = quantumrandom.QuantumRandom()
+    >>> qr.random()
+    0.794368699495203
+    >>> qr.randint(1, 6)
+    4
+    >>> qr.choice(['heads', 'tails'])
+    'tails'
+    >>> qr.sample(range(1, 50), 6)
+    [12, 49, 36, 43, 31, 25]
+    >>> deck = list(range(52))
+    >>> qr.shuffle(deck)
+    >>> qr.randbytes(16).hex()
+    'e686697890ac68804bd8075067edd33d'
+
+Just like ``random.SystemRandom``, it has no state to seed or save, so
+sequences cannot be reproduced. Each instance keeps its own buffer of random
+data, and can be given its own ``api_key``.
+
+There is also a ``randint`` function at the top level, for convenience. It
+draws from a buffer that is shared by the whole process.
+
+::
+
+    >>> quantumrandom.randint(0, 20)
+    5
+
+.. note:: As of version 2.0, ``randint(min, max)`` can return ``max``, just
+   like ``random.randint`` does. Earlier versions never did.
+
+The low-level ``get_data`` function is modelled after the ANU Quantum Random
+Number Generator's JSON API. It makes one request, and returns a list of
+``uint8`` or ``uint16`` integers, or ``hex8`` or ``hex16`` strings.
 
 ::
 
     >>> quantumrandom.get_data()
     [26646]
     >>> quantumrandom.get_data(data_type='uint16', array_length=5)
-    [42796, 32457, 9242, 11316, 21078]
-    >>> quantumrandom.get_data(data_type='hex16', array_length=5, block_size=2)
-    ['f1d5', '0eb3', '1119', '7cfd', '64ce']
+    [22546, 58383, 55100, 9936, 55159]
+    >>> quantumrandom.get_data(data_type='hex8', array_length=3, block_size=2)
+    ['8350', 'df68', 'ae1f']
+    >>> quantumrandom.get_data(data_type='hex16', array_length=2, block_size=3)
+    ['8ba57d8c7d1e', 'bc54a2eb5a07']
 
-Valid ``data_type`` values are ``uint16`` and ``hex16``, and the
-``array_length`` and ``block_size`` cannot be larger than ``1024``. If for some
-reason the API call is not successful, or the incorrect amount of data is
-returned from the server, this function will raise an exception.
+The ``array_length`` cannot be larger than ``1024``. The ``block_size`` only
+applies to the hex data types, where it is the number of 8 or 16 bit values
+in each string, and cannot be larger than ``10``.
 
-Based on this ``get_data`` function, quantumrandom also provides a bunch
-of higher-level helper functions that make easy to perform a variety of
-tasks.
+Based on this ``get_data`` function, quantumrandom also provides a few
+higher-level helper functions. Each of these makes one request when called.
 
 ::
 
-    >>> quantumrandom.randint(0, 20)
-    5
     >>> quantumrandom.hex()[:10]
     '8272613343'
-    >>> quantumrandom.binary()[0]
-    '\xa5'
     >>> len(quantumrandom.binary())
-    10000
+    20480
+    >>> quantumrandom.binary(array_length=8, block_size=1)
+    b'\x07kE\xbb\x7f\xf8\x12\x83\xd5\xc6\xa2\xd17\x8e\x03\x17'
     >>> quantumrandom.uint16()
-    numpy.array([24094, 13944, 22109, 22908, 34878, 33797, 47221, 21485, 37930, ...], dtype=numpy.uint16)
-    >>> quantumrandom.uint16().data[:10]
-    '\x87\x7fY.\xcc\xab\xea\r\x1c`'
+    array([24094, 13944, 22109, 22908, 34878, 33797, 47221, 21485, 37930, ...], dtype=uint16)
+
+``uint16`` requires `NumPy <https://numpy.org>`_, which you can install along
+with quantumrandom by running ``pip install quantumrandom[numpy]``.
+
+``cached_generator`` returns a generator that yields numbers forever, making
+a request for 1024 more each time it runs out. One can be passed to
+``randint`` to have it take its numbers from there instead.
+
+::
+
+    >>> generator = quantumrandom.cached_generator()
+    >>> next(generator)
+    48013
+    >>> quantumrandom.randint(1, 6, generator)
+    2
+
+Handling errors
+---------------
+
+Everything that can go wrong while talking to the API raises a subclass of
+``quantumrandom.QuantumRandomError``:
+
+* ``APIKeyError`` if no API key was found, or the API rejected it.
+* ``QuotaExceededError`` if your API key has used up its requests.
+* ``RateLimitError`` if a request was still being rate limited after being
+  retried.
+* ``QuantumRandomError`` itself for anything else, such as the API being
+  unreachable, timing out (after ``quantumrandom.TIMEOUT`` seconds, 30 by
+  default, or the ``timeout`` that you passed in), or returning something
+  unexpected.
+
+Invalid arguments raise a ``ValueError`` without making a request.
+
+What happened to /dev/qrandom?
+------------------------------
+
+Earlier versions came with ``qrandom-dev``, which created a ``/dev/qrandom``
+character device that could be used to feed the Linux entropy pool. It was
+removed in version 2.0. The library that it was built upon (cusepy) only ever
+supported Python 2 and is no longer available, and a device that makes API
+requests in the background for as long as something reads from it is a poor
+fit for an API that is metered by the request. If all you need is a stream of
+bytes, ``qrandom --binary`` can be piped into whatever needs it.
+
+Development
+-----------
+
+::
+
+    pip install -e .[test,numpy]
+    pytest
+
+The tests do not use the network or need an API key. One additional test
+makes a single request to the real API, and only runs if you ask it to::
+
+    QUANTUMRANDOM_LIVE_TEST=1 QUANTUMRANDOM_API_KEY=your-api-key pytest tests/test_live.py
