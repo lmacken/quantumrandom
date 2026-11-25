@@ -113,7 +113,7 @@ def randint(min=0, max=10, generator=None):
     source_size = int(math.ceil(source_bits / float(INT_BITS)))
     source_max = 2 ** (source_size * INT_BITS) - 1
 
-    modulos = source_max / rand_range
+    modulos = source_max // rand_range
     too_big = modulos * rand_range
     while True:
         num = 0
@@ -123,7 +123,7 @@ def randint(min=0, max=10, generator=None):
         if num >= too_big:
             continue
         else:
-            return num / modulos + min
+            return num // modulos + min
 
 
 def uint16(array_length=100):
